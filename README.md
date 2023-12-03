@@ -3,12 +3,8 @@
 ## Introduction
 
 Welcome to ConsulKVCommander, a cutting-edge Kubernetes operator designed to seamlessly manage and secure HashiCorp's Consul Key-Value (KV) stores within Kubernetes environments. This tool is crafted to enhance the operational efficiency, security, and compliance of your KV data management, making it an indispensable asset for cloud-native applications.
-<style>
-img {
-  border-radius: 8%;
-}
-</style>
-<div align="center"><img src="./assets/logo.png"  width="30%" height="60%"></div>
+
+<div align="center"><img src="./assets/logo-official.png"  width="40%" height="60%"></div>
 
 ## Key Features:
 - **Self-Adaptive System:** At its core, ConsulKVCommander employs advanced self-adaptive mechanisms, including self-healing and self-protecting functionalities, to manage sensitive data dynamically. It ensures that your KV pairs are consistently monitored, and any potential security risks are promptly addressed.
@@ -82,7 +78,8 @@ make undeploy
 ```
 
 ## Contributing
-// TODO(user): Add detailed information on how you would like others to contribute to this project
+
+Please refer to [COTRIBUTING.md](./CONTRIBUTING.md) for the contribution guidelines.
 
 **NOTE:** Run `make --help` for more information on all potential `make` targets
 
