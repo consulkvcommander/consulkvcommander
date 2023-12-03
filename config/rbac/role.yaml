@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - sas.com.sas.com
+  resources:
+  - kvgroups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - sas.com.sas.com
+  resources:
+  - kvgroups/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - sas.com.sas.com
+  resources:
+  - kvgroups/status
+  verbs:
+  - get
+  - patch
+  - update
