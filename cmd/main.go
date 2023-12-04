@@ -19,13 +19,16 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
+
 	"github.com/PagerDuty/go-pagerduty"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+
 	"github.com/yashvardhan-kukreja/consulkv-commander/internal/adaptationengine"
-	"github.com/yashvardhan-kukreja/consulkv-commander/internal/customcontext"
+	"github.com/yashvardhan-kukreja/consulkv-commander/internal/knowledgebase"
 	"github.com/yashvardhan-kukreja/consulkv-commander/internal/secretengine"
-	"os"
+
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
@@ -96,7 +99,7 @@ func main() {
 	}
 
 	// concurrency safe context to track invalidations so as to ignore duplication of invalidations and pagers
-	invalidationsTrackingCtx := customcontext.New(context.Background())
+	invalidationsTrackingCtx := knowledgebase.New(context.Background())
 
 	// setup periodic configmap reconciler
 	periodicReconcilerChan := controller.SetupPeriodicConfigMapReconciler(mgr.GetClient())
@@ -130,13 +133,13 @@ func main() {
 		adaptationEngineClient,
 	)
 
-	rec := &controller.KVGroupReconciler{
+	rec := &controller.ConsulKVReconciler{
 		Client:             mgr.GetClient(),
 		Scheme:             mgr.GetScheme(),
 		SecretEngineClient: secretEngineClient,
 	}
 	if err = rec.SetupWithManager(mgr, periodicReconcilerChan); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "KVGroup")
+		setupLog.Error(err, "unable to create controller", "controller", "ConsulKV")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

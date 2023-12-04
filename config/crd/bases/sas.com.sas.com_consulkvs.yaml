@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: kvgroups.sas.com.sas.com
+  name: consulkvs.sas.com.sas.com
 spec:
   group: sas.com.sas.com
   names:
-    kind: KVGroup
-    listKind: KVGroupList
-    plural: kvgroups
-    singular: kvgroup
+    kind: ConsulKV
+    listKind: ConsulKVList
+    plural: consulkvs
+    singular: consulkv
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: KVGroup is the Schema for the kvgroups API
+        description: ConsulKV is the Schema for the consulkvs API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -32,7 +32,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: KVGroupSpec defines the desired state of KVGroup
+            description: ConsulKVSpec defines the desired state of ConsulKV
             properties:
               consul_url:
                 type: string
@@ -62,7 +62,7 @@ spec:
                 type: array
             type: object
           status:
-            description: KVGroupStatus defines the observed state of KVGroup
+            description: ConsulKVStatus defines the observed state of ConsulKV
             properties:
               adaptation_mode:
                 type: string

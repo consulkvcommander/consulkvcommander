@@ -4,7 +4,7 @@ import (
 	"fmt"
 	sascomv1 "github.com/yashvardhan-kukreja/consulkv-commander/api/v1"
 	"github.com/yashvardhan-kukreja/consulkv-commander/internal/adaptationengine"
-	"github.com/yashvardhan-kukreja/consulkv-commander/internal/customcontext"
+	"github.com/yashvardhan-kukreja/consulkv-commander/internal/knowledgebase"
 	"github.com/yashvardhan-kukreja/consulkv-commander/internal/utils"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -21,12 +21,12 @@ var (
 )
 
 type Client struct {
-	invalidationsTrackingContext *customcontext.CustomContext
+	invalidationsTrackingContext *knowledgebase.KnowledgeBaseContext
 	advisoryLock                 *AdvisoryLock
 	adaptationEngineClient       adaptationengine.Client
 }
 
-func NewClient(invalidationsTrackingContext *customcontext.CustomContext, adaptationEngineClient adaptationengine.Client) Client {
+func NewClient(invalidationsTrackingContext *knowledgebase.KnowledgeBaseContext, adaptationEngineClient adaptationengine.Client) Client {
 	return Client{
 		invalidationsTrackingContext,
 		NewAdvisoryLock(),
@@ -34,13 +34,13 @@ func NewClient(invalidationsTrackingContext *customcontext.CustomContext, adapta
 	}
 }
 
-func (s Client) Run(item *sascomv1.KVGroup, configMapPayloadUntilNow map[string]string, pathToWeights map[string]int) (map[string]string, error) {
-	kvGroupKey := client.ObjectKeyFromObject(item).String()
+func (s Client) Run(item *sascomv1.ConsulKV, configMapPayloadUntilNow map[string]string, pathToWeights map[string]int) (map[string]string, error) {
+	consulKvKey := client.ObjectKeyFromObject(item).String()
 
-	s.advisoryLock.Init(kvGroupKey)
+	s.advisoryLock.Init(consulKvKey)
 
-	s.advisoryLock.Lock(kvGroupKey)
-	defer s.advisoryLock.Unlock(kvGroupKey)
+	s.advisoryLock.Lock(consulKvKey)
+	defer s.advisoryLock.Unlock(consulKvKey)
 
 	invalidationsOutput := getInvalidations(item, configMapPayloadUntilNow)
 
@@ -52,14 +52,14 @@ func (s Client) Run(item *sascomv1.KVGroup, configMapPayloadUntilNow map[string]
 	return sanitizedConfigMapPayload, nil
 }
 
-func getInvalidations(kvGroup *sascomv1.KVGroup, configMapPayload map[string]string) utils.InvalidationsOutput {
+func getInvalidations(consulKv *sascomv1.ConsulKV, configMapPayload map[string]string) utils.InvalidationsOutput {
 	invalidationsOutput := []utils.Invalidation{}
-	if len(kvGroup.Spec.GuardAgainst) == 0 {
+	if len(consulKv.Spec.GuardAgainst) == 0 {
 		return invalidationsOutput
 	}
 
 	validationRegexes := []string{}
-	for _, guard := range kvGroup.Spec.GuardAgainst {
+	for _, guard := range consulKv.Spec.GuardAgainst {
 		validationRegex := guard
 		regexAlias, found := predefinedRegexAliases[guard]
 		if found {
@@ -70,7 +70,7 @@ func getInvalidations(kvGroup *sascomv1.KVGroup, configMapPayload map[string]str
 
 	for pathToValidate, valueToValidate := range configMapPayload {
 		// skip validation is pathToValidate was ultimately found to be whitelisted
-		if isPathWhitelisted(pathToValidate, kvGroup.Spec.WhitelistedPaths) {
+		if isPathWhitelisted(pathToValidate, consulKv.Spec.WhitelistedPaths) {
 			continue
 		}
 

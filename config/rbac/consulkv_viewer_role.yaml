@@ -1,20 +1,20 @@
-# permissions for end users to view kvgroups.
+# permissions for end users to view consulkvs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: kvgroup-viewer-role
+    app.kubernetes.io/instance: consulkv-viewer-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: consulkv-commander
     app.kubernetes.io/part-of: consulkv-commander
     app.kubernetes.io/managed-by: kustomize
-  name: kvgroup-viewer-role
+  name: consulkv-viewer-role
 rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups
+  - consulkvs
   verbs:
   - get
   - list
@@ -22,6 +22,6 @@ rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups/status
+  - consulkvs/status
   verbs:
   - get

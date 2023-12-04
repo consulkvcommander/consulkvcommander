@@ -1,20 +1,20 @@
-# permissions for end users to edit kvgroups.
+# permissions for end users to edit consulkvs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: clusterrole
-    app.kubernetes.io/instance: kvgroup-editor-role
+    app.kubernetes.io/instance: consulkv-editor-role
     app.kubernetes.io/component: rbac
     app.kubernetes.io/created-by: consulkv-commander
     app.kubernetes.io/part-of: consulkv-commander
     app.kubernetes.io/managed-by: kustomize
-  name: kvgroup-editor-role
+  name: consulkv-editor-role
 rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups
+  - consulkvs
   verbs:
   - create
   - delete
@@ -26,6 +26,6 @@ rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups/status
+  - consulkvs/status
   verbs:
   - get

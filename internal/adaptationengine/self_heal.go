@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (c Client) selfHeal(item *sascomv1.KVGroup, invalidationsOutput utils.InvalidationsOutput, configMapPayloadUntilNow map[string]string, raisePager bool) (map[string]string, error) {
+func (c Client) selfHeal(item *sascomv1.ConsulKV, invalidationsOutput utils.InvalidationsOutput, configMapPayloadUntilNow map[string]string, raisePager bool) (map[string]string, error) {
 	consulKvClient := utils.NewConsulKV(item.Spec.ConsulUrl)
 
 	failedDeletions := utils.InvalidationsOutput{}

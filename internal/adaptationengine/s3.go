@@ -36,13 +36,13 @@ func parseBucketName(link string) (string, string, bool) {
 	return bucketName, objectKey, true
 }
 
-func (s Client) adaptSheet(item *sascomv1.KVGroup, newInvalidationsOutput utils.InvalidationsOutput) error {
+func (s Client) adaptSheet(item *sascomv1.ConsulKV, newInvalidationsOutput utils.InvalidationsOutput) error {
 	bucketName, objectKey, ok := parseBucketName(s.sheetLink)
 	if !ok {
 		return nil
 	}
 
-	targetKvGroupKey := client.ObjectKeyFromObject(item).String()
+	targetConsulKvKey := client.ObjectKeyFromObject(item).String()
 
 	resp, statusCode, err := utils.CallAPI(utils.APIRequest{
 		URL:    s.sheetLink,
@@ -61,16 +61,16 @@ func (s Client) adaptSheet(item *sascomv1.KVGroup, newInvalidationsOutput utils.
 		return fmt.Errorf("error occurred while reading the records of the CSV: %w", err)
 	}
 
-	kvGroupHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx := -1, -1, -1, -1
+	consulKvHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx := -1, -1, -1, -1
 	if len(records) == 0 {
-		kvGroupHeaderIdx = 0
+		consulKvHeaderIdx = 0
 		records = [][]string{{"Link", "Time", "Details", "Link"}}
 	} else {
 		headerRecord := records[0]
 		for idx, col := range headerRecord {
 			switch col {
-			case "KVGroup":
-				kvGroupHeaderIdx = idx
+			case "ConsulKV":
+				consulKvHeaderIdx = idx
 			case "Time":
 				timeHeaderIdx = idx
 			case "Details":
@@ -80,20 +80,20 @@ func (s Client) adaptSheet(item *sascomv1.KVGroup, newInvalidationsOutput utils.
 			}
 		}
 	}
-	if kvGroupHeaderIdx == -1 {
-		curMax, _ := utils.MaxInSlice([]int{kvGroupHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
-		kvGroupHeaderIdx = 1 + curMax
+	if consulKvHeaderIdx == -1 {
+		curMax, _ := utils.MaxInSlice([]int{consulKvHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
+		consulKvHeaderIdx = 1 + curMax
 	}
 	if timeHeaderIdx == -1 {
-		curMax, _ := utils.MaxInSlice([]int{kvGroupHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
+		curMax, _ := utils.MaxInSlice([]int{consulKvHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
 		timeHeaderIdx = 1 + curMax
 	}
 	if detailsHeaderIdx == -1 {
-		curMax, _ := utils.MaxInSlice([]int{kvGroupHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
+		curMax, _ := utils.MaxInSlice([]int{consulKvHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
 		detailsHeaderIdx = 1 + curMax
 	}
 	if linkHeaderIdx == -1 {
-		curMax, _ := utils.MaxInSlice([]int{kvGroupHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
+		curMax, _ := utils.MaxInSlice([]int{consulKvHeaderIdx, timeHeaderIdx, detailsHeaderIdx, linkHeaderIdx})
 		linkHeaderIdx = 1 + curMax
 	}
 
@@ -102,10 +102,10 @@ func (s Client) adaptSheet(item *sascomv1.KVGroup, newInvalidationsOutput utils.
 	// TODO: take care of edge cases
 	rowIdx := 0
 	for _, record := range records {
-		kvGroupKey := record[kvGroupHeaderIdx]
+		consulKvKey := record[consulKvHeaderIdx]
 
 		// because we are modifying it
-		if kvGroupKey == targetKvGroupKey {
+		if consulKvKey == targetConsulKvKey {
 			continue
 		}
 
@@ -117,7 +117,7 @@ func (s Client) adaptSheet(item *sascomv1.KVGroup, newInvalidationsOutput utils.
 	var newRecord []string
 	newRecord = make([]string, len(records[0]))
 
-	newRecord[kvGroupHeaderIdx] = targetKvGroupKey
+	newRecord[consulKvHeaderIdx] = targetConsulKvKey
 	newRecord[timeHeaderIdx] = time.Now().Format(time.DateTime)
 	newRecord[linkHeaderIdx] = "https://uwaterloo-2.pagerduty.com/incidents"
 	newRecord[detailsHeaderIdx] = newInvalidationsOutput.String()

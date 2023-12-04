@@ -14,7 +14,7 @@ resources:
   controller: true
   domain: sas.com
   group: sas.com
-  kind: KVGroup
+  kind: ConsulKV
   path: github.com/yashvardhan-kukreja/consulkv-commander/api/v1
   version: v1
 version: "3"

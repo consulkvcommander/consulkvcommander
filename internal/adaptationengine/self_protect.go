@@ -7,7 +7,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func (c Client) selfProtect(item *sascomv1.KVGroup, invalidationsOutput utils.InvalidationsOutput, configMapPayloadUntilNow map[string]string, raisePager bool) (map[string]string, error) {
+func (c Client) selfProtect(item *sascomv1.ConsulKV, invalidationsOutput utils.InvalidationsOutput, configMapPayloadUntilNow map[string]string, raisePager bool) (map[string]string, error) {
 	defer func() {
 		c.invalidationsTrackingContext.SetInvalidationsOutput(client.ObjectKeyFromObject(item).String(), invalidationsOutput, string(sascomv1.SelfProtecting))
 	}()

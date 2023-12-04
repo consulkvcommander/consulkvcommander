@@ -7,7 +7,7 @@ rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups
+  - consulkvs
   verbs:
   - create
   - delete
@@ -19,13 +19,13 @@ rules:
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups/finalizers
+  - consulkvs/finalizers
   verbs:
   - update
 - apiGroups:
   - sas.com.sas.com
   resources:
-  - kvgroups/status
+  - consulkvs/status
   verbs:
   - get
   - patch

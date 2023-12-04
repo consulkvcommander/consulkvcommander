@@ -23,8 +23,8 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// KVGroupSpec defines the desired state of KVGroup
-type KVGroupSpec struct {
+// ConsulKVSpec defines the desired state of ConsulKV
+type ConsulKVSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
@@ -62,8 +62,8 @@ var (
 	SelfProtecting AdaptationMode = "self-protecting"
 )
 
-// KVGroupStatus defines the observed state of KVGroup
-type KVGroupStatus struct {
+// ConsulKVStatus defines the observed state of ConsulKV
+type ConsulKVStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 	UtilityFunctionValue string         `json:"utility_function_value"`
@@ -73,24 +73,24 @@ type KVGroupStatus struct {
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
 
-// KVGroup is the Schema for the kvgroups API
-type KVGroup struct {
+// ConsulKV is the Schema for the consulkvs API
+type ConsulKV struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   KVGroupSpec   `json:"spec,omitempty"`
-	Status KVGroupStatus `json:"status,omitempty"`
+	Spec   ConsulKVSpec   `json:"spec,omitempty"`
+	Status ConsulKVStatus `json:"status,omitempty"`
 }
 
 //+kubebuilder:object:root=true
 
-// KVGroupList contains a list of KVGroup
-type KVGroupList struct {
+// ConsulKVList contains a list of ConsulKV
+type ConsulKVList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []KVGroup `json:"items"`
+	Items           []ConsulKV `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&KVGroup{}, &KVGroupList{})
+	SchemeBuilder.Register(&ConsulKV{}, &ConsulKVList{})
 }

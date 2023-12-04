@@ -1,4 +1,4 @@
-package customcontext
+package knowledgebase
 
 import (
 	"context"
@@ -14,16 +14,16 @@ const (
 	lastInvalidationsTime
 )
 
-type CustomContext struct {
+type KnowledgeBaseContext struct {
 	ctx  context.Context
 	lock *sync.RWMutex
 }
 
-func New(ctx context.Context) *CustomContext {
-	return &CustomContext{ctx: ctx, lock: &sync.RWMutex{}}
+func New(ctx context.Context) *KnowledgeBaseContext {
+	return &KnowledgeBaseContext{ctx: ctx, lock: &sync.RWMutex{}}
 }
 
-func (c *CustomContext) GetLastInvalidationsOutput(kvGroupKey string, adaptationMode string) utils.InvalidationsOutput {
+func (c *KnowledgeBaseContext) GetLastInvalidationsOutput(consulKvKey string, adaptationMode string) utils.InvalidationsOutput {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
@@ -31,10 +31,10 @@ func (c *CustomContext) GetLastInvalidationsOutput(kvGroupKey string, adaptation
 	if !ok {
 		return utils.InvalidationsOutput{}
 	}
-	return output[kvGroupKey+"-"+adaptationMode]
+	return output[consulKvKey+"-"+adaptationMode]
 }
 
-func (c *CustomContext) GetLastInvalidationsTime(kvGroupKey string, adaptationMode string) int64 {
+func (c *KnowledgeBaseContext) GetLastInvalidationsTime(consulKvKey string, adaptationMode string) int64 {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 
@@ -42,10 +42,10 @@ func (c *CustomContext) GetLastInvalidationsTime(kvGroupKey string, adaptationMo
 	if !ok {
 		return 0
 	}
-	return output[kvGroupKey+"-"+adaptationMode]
+	return output[consulKvKey+"-"+adaptationMode]
 }
 
-func (c *CustomContext) SetInvalidationsOutput(kvGroupKey string, newInvalidationsOutput utils.InvalidationsOutput, adaptationMode string) {
+func (c *KnowledgeBaseContext) SetInvalidationsOutput(consulKvKey string, newInvalidationsOutput utils.InvalidationsOutput, adaptationMode string) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -58,8 +58,8 @@ func (c *CustomContext) SetInvalidationsOutput(kvGroupKey string, newInvalidatio
 		newInvalidationsTimeMap = map[string]int64{}
 	}
 
-	newInvalidationsOutputMap[kvGroupKey+"-"+adaptationMode] = newInvalidationsOutput
-	newInvalidationsTimeMap[kvGroupKey+"-"+adaptationMode] = time.Now().UnixMilli()
+	newInvalidationsOutputMap[consulKvKey+"-"+adaptationMode] = newInvalidationsOutput
+	newInvalidationsTimeMap[consulKvKey+"-"+adaptationMode] = time.Now().UnixMilli()
 
 	newCtx := context.WithValue(c.ctx, lastInvalidationsOutputKey, newInvalidationsOutputMap)
 	newCtx = context.WithValue(newCtx, lastInvalidationsTime, newInvalidationsTimeMap)

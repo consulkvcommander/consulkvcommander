@@ -1,12 +1,12 @@
 apiVersion: sas.com.sas.com/v1
-kind: KVGroup
+kind: ConsulKV
 metadata:
   labels:
-    app.kubernetes.io/name: kvgroup
-    app.kubernetes.io/instance: kvgroup-sample
+    app.kubernetes.io/name: consulkv
+    app.kubernetes.io/instance: consulkv-sample
     app.kubernetes.io/part-of: consulkv-commander
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: consulkv-commander
-  name: kvgroup-sample
+  name: consulkv-sample
 spec:
   # TODO(user): Add fields here

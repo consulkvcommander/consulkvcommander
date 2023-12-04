@@ -23,7 +23,7 @@ func SetupPeriodicConfigMapReconciler(k8sClient client.Client) chan event.Generi
 }
 
 func broadcastReconcile(k8sClient client.Client, ch chan event.GenericEvent) {
-	list := &sascomv1.KVGroupList{}
+	list := &sascomv1.ConsulKVList{}
 	listOpts := []client.ListOption{
 		client.InNamespace(""),
 	}

@@ -1,4 +1,4 @@
 ## Append samples of your project ##
 resources:
-- sas.com_v1_kvgroup.yaml
+- sas.com_v1_consulkv.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples
